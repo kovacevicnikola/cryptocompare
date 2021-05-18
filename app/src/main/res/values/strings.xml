@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CryptoCompare</string>
+    <string name="image_crypto_description_label">Crypto currency icon</string>
 </resources>
