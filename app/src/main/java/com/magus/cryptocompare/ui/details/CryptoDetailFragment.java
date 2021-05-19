@@ -33,7 +33,6 @@ public class CryptoDetailFragment extends BaseCryptoDetailsFragment {
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         binding = FragmentCryptoDetailBinding.inflate(inflater, container, false);
-
         return binding.getRoot();
     }
 

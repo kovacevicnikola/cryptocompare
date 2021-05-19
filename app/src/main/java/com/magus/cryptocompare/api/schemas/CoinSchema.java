@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Coin {
+public class CoinSchema {
 
     @JsonProperty("Id")
     private String id;
@@ -22,7 +22,7 @@ public class Coin {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    public Coin(LinkedHashMap<String, String> value) {
+    public CoinSchema(LinkedHashMap<String, String> value) {
         imageUrl = value.get("ImageUrl");
         symbol = value.get("Symbol");
         fullName = value.get("FullName");

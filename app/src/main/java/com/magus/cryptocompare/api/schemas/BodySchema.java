@@ -19,7 +19,7 @@ import java.util.Map;
         "TimeTo",
         "Data"
 })
-public class Data {
+public class BodySchema {
 
     @JsonProperty("Aggregated")
     private Boolean aggregated;
@@ -28,7 +28,7 @@ public class Data {
     @JsonProperty("TimeTo")
     private Integer timeTo;
     @JsonProperty("Data")
-    private List<PriceAndVolumeData> data = null;
+    private List<PriceAndVolumeSchema> data = null;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -63,12 +63,12 @@ public class Data {
     }
 
     @JsonProperty("Data")
-    public List<PriceAndVolumeData> getData() {
+    public List<PriceAndVolumeSchema> getData() {
         return data;
     }
 
     @JsonProperty("Data")
-    public void setData(List<PriceAndVolumeData> data) {
+    public void setData(List<PriceAndVolumeSchema> data) {
         this.data = data;
     }
 

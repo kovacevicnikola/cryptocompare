@@ -31,9 +31,9 @@ public class ResponseModel {
     @JsonProperty("Type")
     private Integer type;
     @JsonProperty("RateLimit")
-    private RateLimit rateLimit;
+    private RateLimitSchema rateLimit;
     @JsonProperty("Data")
-    private Data data;
+    private BodySchema data;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -78,22 +78,22 @@ public class ResponseModel {
     }
 
     @JsonProperty("RateLimit")
-    public RateLimit getRateLimit() {
+    public RateLimitSchema getRateLimit() {
         return rateLimit;
     }
 
     @JsonProperty("RateLimit")
-    public void setRateLimit(RateLimit rateLimit) {
+    public void setRateLimit(RateLimitSchema rateLimit) {
         this.rateLimit = rateLimit;
     }
 
     @JsonProperty("Data")
-    public Data getData() {
+    public BodySchema getData() {
         return data;
     }
 
     @JsonProperty("Data")
-    public void setData(Data data) {
+    public void setData(BodySchema data) {
         this.data = data;
     }
 

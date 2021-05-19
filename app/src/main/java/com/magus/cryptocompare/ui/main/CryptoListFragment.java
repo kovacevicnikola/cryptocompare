@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.magus.cryptocompare.R;
-import com.magus.cryptocompare.api.schemas.Coin;
+import com.magus.cryptocompare.api.schemas.CoinSchema;
 import com.magus.cryptocompare.databinding.MainFragmentBinding;
 
 import org.jetbrains.annotations.NotNull;
@@ -55,14 +55,14 @@ public class CryptoListFragment extends Fragment {
         adapter = new CryptoRecyclerViewAdapter(getString(R.string.base_image_url), getParentFragmentManager());
         binding.rvCrypto.setAdapter(adapter);
         binding.rvCrypto.setLayoutManager(new LinearLayoutManager(getContext()));
-        mViewModel.getCoins().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new SingleObserver<List<Coin>>() {
+        mViewModel.getCoins().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new SingleObserver<List<CoinSchema>>() {
             @Override
             public void onSubscribe(@NotNull Disposable d) {
 
             }
 
             @Override
-            public void onSuccess(@NotNull List<Coin> coins) {
+            public void onSuccess(@NotNull List<CoinSchema> coins) {
                 adapter.bindData(coins);
             }
 

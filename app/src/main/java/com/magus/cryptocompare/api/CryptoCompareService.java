@@ -13,15 +13,15 @@ import retrofit2.http.Query;
 public interface CryptoCompareService {
     @GET("/data/v2/histoday")
     @OkHttpTimeouts(read = 5, write = 5)
-    Call<ResponseModel> getDataByDay(@Query("api_key") String apiKey, @Query("limit") int limit, @Query("fsim") String valueFrom, @Query("tsym") String valueTo);
+    Call<ResponseModel> getDataByDay(@Query("api_key") String apiKey, @Query("limit") int limit, @Query("fsym") String valueFrom, @Query("tsym") String valueTo);
 
     @GET("/data/v2/histohour")
     @OkHttpTimeouts(read = 5, write = 5)
-    Call<ResponseModel> getDataByHour(@Query("api_key") String apiKey, @Query("limit") int limit, @Query("fsim") String valueFrom, @Query("tsym") String valueTo);
+    Call<ResponseModel> getDataByHour(@Query("api_key") String apiKey, @Query("limit") int limit, @Query("fsym") String valueFrom, @Query("tsym") String valueTo);
 
     @GET("/data/v2/histominute")
     @OkHttpTimeouts(read = 5, write = 5)
-    Call<ResponseModel> getDataByMinute(@Query("api_key") String apiKey, @Query("limit") int limit, @Query("fsim") String valueFrom, @Query("tsym") String valueTo);
+    Call<ResponseModel> getDataByMinute(@Query("api_key") String apiKey, @Query("limit") int limit, @Query("fsym") String valueFrom, @Query("tsym") String valueTo);
 
     @GET("/data/all/coinlist")
     @OkHttpTimeouts(read = 10, write = 10)

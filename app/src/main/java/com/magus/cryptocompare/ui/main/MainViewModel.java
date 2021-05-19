@@ -2,6 +2,8 @@ package com.magus.cryptocompare.ui.main;
 
 import android.app.Application;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.TypedValue;
 
@@ -10,8 +12,8 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.magus.cryptocompare.R;
 import com.magus.cryptocompare.api.CryptoCompareService;
-import com.magus.cryptocompare.api.schemas.Coin;
-import com.magus.cryptocompare.api.schemas.PriceAndVolumeData;
+import com.magus.cryptocompare.api.schemas.CoinSchema;
+import com.magus.cryptocompare.api.schemas.PriceAndVolumeSchema;
 import com.magus.cryptocompare.api.schemas.ResponseModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -37,11 +39,16 @@ public class MainViewModel extends AndroidViewModel {
     private static float CHART_HEIGHT_DP = 300f;
     private CryptoCompareService service;
     private String apiKey;
+    private Paint paintDaily;
+    private Paint paintHourly;
+    private Paint paintMinute;
 
     public MainViewModel(@NonNull @NotNull Application application) {
         super(application);
+        generatePaint();
         apiKey = getApplication().getString(R.string.crypto_compare_api_key);
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         long cacheSize = 10 * 1024 * 1024; // 10 MB
         File httpCacheDirectory = new File(application.getCacheDir(), "http-cache");
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
@@ -57,14 +64,45 @@ public class MainViewModel extends AndroidViewModel {
                 .build().create(CryptoCompareService.class);
     }
 
-    Single<List<Coin>> getCoins() {
+    private void generatePaint() {
+        paintDaily = new Paint();
+        paintDaily.setAntiAlias(true);
+        paintDaily.setStrokeWidth(3);
+        paintDaily.setColor(Color.GREEN);
+        paintDaily.setStyle(Paint.Style.STROKE);
+        paintHourly = new Paint();
+        paintHourly.setAntiAlias(true);
+        paintHourly.setStrokeWidth(3);
+        paintHourly.setColor(Color.YELLOW);
+        paintHourly.setStyle(Paint.Style.STROKE);
+        paintMinute = new Paint();
+        paintMinute.setAntiAlias(true);
+        paintMinute.setStrokeWidth(3);
+        paintMinute.setColor(Color.RED);
+        paintMinute.setStyle(Paint.Style.STROKE);
+    }
+
+    public Paint getPaint(CryptoDataType data) {
+        switch (data) {
+            case DAILY:
+                return paintDaily;
+            case BYMINUTE:
+                return paintMinute;
+            case HOURLY:
+                return paintHourly;
+        }
+        return null;
+
+    }
+
+    Single<List<CoinSchema>> getCoins() {
         return Single.create(emitter -> {
             Response<ResponseModel> response = service.getCryptoCoinList(true, apiKey).execute();
             if (response.isSuccessful() && response.body() != null) {
-                List<Coin> coins = new ArrayList<>();
+                List<CoinSchema> coins = new ArrayList<>();
                 for (Map.Entry<String, Object> entry : response.body().getData().getAdditionalProperties().entrySet()) {
                     try {
-                        coins.add(new Coin((LinkedHashMap<String, String>) entry.getValue()));
+                        coins.add(new CoinSchema((LinkedHashMap<String, String>) entry.getValue()));
                     } catch (Exception e) {
                         Timber.e(e);
                     }
@@ -89,7 +127,7 @@ public class MainViewModel extends AndroidViewModel {
                     response = service.getDataByHour(apiKey, limit, valueFrom, valueTo).execute();
                     break;
 
-                case MINUTE:
+                case BYMINUTE:
                     response = service.getDataByMinute(apiKey, limit, valueFrom, valueTo).execute();
 
                     break;
@@ -103,44 +141,47 @@ public class MainViewModel extends AndroidViewModel {
                 );
                 float chartWidthPx = r.getDisplayMetrics().widthPixels;
                 Double maxHigh = Double.MIN_NORMAL;
-                Integer maxTime = Integer.MIN_VALUE;
+                Long maxTime = Long.MIN_VALUE;
                 Double minHigh = Double.MAX_VALUE;
-                Integer minTime = Integer.MAX_VALUE;
-                List<PriceAndVolumeData> priceAndVolumeList = response.body().getData().getData();
-                for (PriceAndVolumeData priceAndVolumeData : priceAndVolumeList) {
-                    if (priceAndVolumeData.getHigh() > maxHigh)
-                        maxHigh = priceAndVolumeData.getHigh();
-                    else if (priceAndVolumeData.getHigh() < minHigh)
-                        minHigh = priceAndVolumeData.getHigh();
-                    if (priceAndVolumeData.getTime() > maxTime)
-                        maxTime = priceAndVolumeData.getTime();
-                    else if (priceAndVolumeData.getTime() < minTime)
-                        minTime = priceAndVolumeData.getTime();
+                Long minTime = Long.MAX_VALUE;
+                List<PriceAndVolumeSchema> priceAndVolumeList = response.body().getData().getData();
+                for (PriceAndVolumeSchema priceAndVolumeSchema : priceAndVolumeList) {
+                    if (priceAndVolumeSchema.getHigh() > maxHigh)
+                        maxHigh = priceAndVolumeSchema.getHigh();
+                    if (priceAndVolumeSchema.getHigh() < minHigh)
+                        minHigh = priceAndVolumeSchema.getHigh();
+                    if (priceAndVolumeSchema.getTime() > maxTime)
+                        maxTime = priceAndVolumeSchema.getTime();
+                    if (priceAndVolumeSchema.getTime() < minTime)
+                        minTime = priceAndVolumeSchema.getTime();
                 }
-                int ct = 0;
-                for (PriceAndVolumeData priceAndVolumeData : priceAndVolumeList) {
-                    if (ct++ != 0)
-                        path.moveTo(0, priceAndVolumeData.getHigh().floatValue() / maxHigh.floatValue() * chartHeightPx);
-                    else
-                        path.lineTo(priceAndVolumeData.getTime() / maxTime.floatValue() * chartWidthPx,
-                                priceAndVolumeData.getHigh().floatValue() / maxHigh.floatValue() * chartHeightPx);
+                boolean initial = true;
+                Timber.d("maxHigh %f, maxTime %d, minHigh %f, minTime %d", maxHigh, maxTime, minHigh, minTime);
+                Timber.d("chart width %f, chart height %f", chartHeightPx, chartHeightPx);
+                for (PriceAndVolumeSchema priceAndVolumeSchema : priceAndVolumeList) {
+                    float y = (priceAndVolumeSchema.getHigh().floatValue() - minHigh.floatValue()) / (maxHigh.floatValue() - minHigh.floatValue()) * chartHeightPx;
+                    float x = (priceAndVolumeSchema.getTime().floatValue() - minTime) / (maxTime.floatValue() - minTime) * chartWidthPx;
+                    if (initial) {
+                        path.moveTo(0, y);
+                        initial = false;
+                    } else path.lineTo(x, y);
+                    Timber.d("x %f, y %f", x, y);
                 }
                 emitter.onSuccess(path);
 
             } else {
-                //todo
+                emitter.onError(new Throwable("No data for specified coin!"));
             }
 
 
         });
     }
-
     public Single<Response<LinkedHashMap<String, String>>> getCoinExchangeRate(String symbolFrom, String[] symbolsTo) {
         return service.getCoinExchangeModel(apiKey, symbolFrom, symbolsTo);
     }
 
     public enum CryptoDataType {
-        DAILY, HOURLY, MINUTE
+        DAILY, HOURLY, BYMINUTE
     }
 
 

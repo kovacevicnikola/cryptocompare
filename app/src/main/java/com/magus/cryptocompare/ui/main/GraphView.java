@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 public class GraphView extends View {
     private Path path;
     private Paint paint;
-
     public GraphView(Context context) {
         super(context);
     }
@@ -33,15 +32,6 @@ public class GraphView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (path != null && paint != null) canvas.drawPath(path, paint);
-    }
-
-    class Point {
-        float x, y;
-
-        Point(float x, float y) {
-            this.x = x;
-            this.y = y;
-        }
 
     }
 

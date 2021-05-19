@@ -23,9 +23,9 @@ import java.util.Map;
         "conversionType",
         "conversionSymbol"
 })
-public class PriceAndVolumeData implements Comparable<PriceAndVolumeData> {
+public class PriceAndVolumeSchema implements Comparable<PriceAndVolumeSchema> {
     @JsonProperty("time")
-    private Integer time;
+    private Long time;
     @JsonProperty("high")
     private Double high;
     @JsonProperty("low")
@@ -46,17 +46,17 @@ public class PriceAndVolumeData implements Comparable<PriceAndVolumeData> {
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @Override
-    public int compareTo(PriceAndVolumeData o) {
+    public int compareTo(PriceAndVolumeSchema o) {
         return this.getHigh().compareTo(o.getHigh());
     }
 
     @JsonProperty("time")
-    public Integer getTime() {
+    public Long getTime() {
         return time;
     }
 
     @JsonProperty("time")
-    public void setTime(Integer time) {
+    public void setTime(Long time) {
         this.time = time;
     }
 

@@ -20,7 +20,7 @@ import java.util.Map;
         "USD",
         "EUR"
 })
-public class CoinExchangeModel {
+public class CoinExchangeSchema {
     @JsonProperty("BTC")
     private Integer btc;
     @JsonProperty("ETH")

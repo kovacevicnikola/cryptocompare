@@ -14,7 +14,7 @@ import java.util.Map;
 @JsonPropertyOrder({
 
 })
-public class RateLimit {
+public class RateLimitSchema {
 
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
