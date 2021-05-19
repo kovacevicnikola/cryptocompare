@@ -1,5 +1,5 @@
 
-package com.magus.cryptocompare.api.schemas;
+package com.magus.cryptocompare.datasource.api.schemas;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -23,7 +23,7 @@ import java.util.Map;
         "conversionType",
         "conversionSymbol"
 })
-public class PriceAndVolumeSchema implements Comparable<PriceAndVolumeSchema> {
+public class PriceAndVolumeSchema {
     @JsonProperty("time")
     private Long time;
     @JsonProperty("high")
@@ -45,10 +45,6 @@ public class PriceAndVolumeSchema implements Comparable<PriceAndVolumeSchema> {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @Override
-    public int compareTo(PriceAndVolumeSchema o) {
-        return this.getHigh().compareTo(o.getHigh());
-    }
 
     @JsonProperty("time")
     public Long getTime() {

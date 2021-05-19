@@ -20,8 +20,6 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
-import timber.log.Timber;
 
 public class CryptoDetailExchangeFragment extends BaseCryptoDetailsFragment {
     public static final String[] EXCHANGE_SYMBOLS = new String[]{"BTC", "ETH", "EVN", "DOGE", "ZEC", "USD", "EUR"};
@@ -47,24 +45,25 @@ public class CryptoDetailExchangeFragment extends BaseCryptoDetailsFragment {
         adapter = new CryptoDetailExchangeRecyclerViewAdapter();
         binding.rvExchangeRates.setAdapter(adapter);
         binding.rvExchangeRates.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        mViewModel.getCoinExchangeRate(symbol, EXCHANGE_SYMBOLS).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new SingleObserver<Response<LinkedHashMap<String, String>>>() {
-            @Override
-            public void onSubscribe(@NotNull Disposable d) {
+        mViewModel.getCoinExchangeRate(symbol, EXCHANGE_SYMBOLS).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<LinkedHashMap<String, String>>() {
+                    @Override
+                    public void onSubscribe(@NotNull Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onSuccess(@NotNull Response<LinkedHashMap<String, String>> response) {
-                if (response.isSuccessful() && response.body() != null)
-                    adapter.bindData(response.body());
-            }
+                    @Override
+                    public void onSuccess(@NotNull LinkedHashMap<String, String> linkedHashMap) {
+                        adapter.bindData(linkedHashMap);
+                    }
 
-            @Override
-            public void onError(@NotNull Throwable e) {
-                Timber.e(e);
-            }
-        });
+                    @Override
+                    public void onError(@NotNull Throwable e) {
+                        handleError(e.getMessage());
+                    }
+                });
     }
+
 
     @Nullable
     @org.jetbrains.annotations.Nullable

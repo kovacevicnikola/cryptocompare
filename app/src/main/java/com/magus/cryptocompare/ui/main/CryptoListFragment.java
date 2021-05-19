@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,8 +13,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.magus.cryptocompare.R;
-import com.magus.cryptocompare.api.schemas.CoinSchema;
 import com.magus.cryptocompare.databinding.MainFragmentBinding;
+import com.magus.cryptocompare.datasource.database.CoinEntity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +24,6 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class CryptoListFragment extends Fragment {
 
@@ -55,21 +55,29 @@ public class CryptoListFragment extends Fragment {
         adapter = new CryptoRecyclerViewAdapter(getString(R.string.base_image_url), getParentFragmentManager());
         binding.rvCrypto.setAdapter(adapter);
         binding.rvCrypto.setLayoutManager(new LinearLayoutManager(getContext()));
-        mViewModel.getCoins().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new SingleObserver<List<CoinSchema>>() {
+        mViewModel.getCoins().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new SingleObserver<List<CoinEntity>>() {
             @Override
             public void onSubscribe(@NotNull Disposable d) {
-
+                binding.progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onSuccess(@NotNull List<CoinSchema> coins) {
-                adapter.bindData(coins);
+            public void onSuccess(@NotNull List<CoinEntity> coins) {
+                binding.progressBar.setVisibility(View.GONE);
+                if (coins.isEmpty() && isAdded())
+                    Toast.makeText(getContext(), "Dataset seems to be empty!", Toast.LENGTH_LONG).show();
+                else adapter.bindData(coins);
             }
 
             @Override
             public void onError(@NotNull Throwable e) {
-                Timber.e(e);
+                handleError(e.getMessage());
             }
         });
     }
+
+    protected void handleError(String message) {
+        if (isAdded()) Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+    }
+
 }

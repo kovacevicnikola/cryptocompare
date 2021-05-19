@@ -1,4 +1,4 @@
-package com.magus.cryptocompare.api.schemas;
+package com.magus.cryptocompare.datasource.api.schemas;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CoinSchema {
@@ -22,12 +21,6 @@ public class CoinSchema {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    public CoinSchema(LinkedHashMap<String, String> value) {
-        imageUrl = value.get("ImageUrl");
-        symbol = value.get("Symbol");
-        fullName = value.get("FullName");
-        id = value.get("Id");
-    }
 
     @Override
     public String toString() {

@@ -1,12 +1,10 @@
-package com.magus.cryptocompare.api;
+package com.magus.cryptocompare.datasource.api;
 
-import com.magus.cryptocompare.api.schemas.ResponseModel;
+import com.magus.cryptocompare.datasource.api.schemas.ResponseModel;
 
 import java.util.LinkedHashMap;
 
-import io.reactivex.Single;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -28,5 +26,5 @@ public interface CryptoCompareService {
     Call<ResponseModel> getCryptoCoinList(@Query("summary") boolean summary, @Query("api_key") String apiKey);
 
     @GET("/data/price")
-    Single<Response<LinkedHashMap<String, String>>> getCoinExchangeModel(@Query("api_key") String apiKey, @Query("fsym") String valueFrom, @Query("tsyms") String[] valueTo);
+    Call<LinkedHashMap<String, String>> getCoinExchangeModel(@Query("api_key") String apiKey, @Query("fsym") String valueFrom, @Query("tsyms") String[] valueTo);
 }

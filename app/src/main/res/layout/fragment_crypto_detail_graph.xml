@@ -9,11 +9,49 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/tvDayLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value by day"
+            app:layout_constraintBottom_toTopOf="@id/gvDaily"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.magus.cryptocompare.ui.main.GraphView
             android:id="@+id/gvDaily"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:padding="8dp"
+            app:layout_constraintTop_toBottomOf="@id/tvDayLabel" />
+
+        <TextView
+            android:id="@+id/tvHighValueDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@id/gvDaily"
+            app:layout_constraintTop_toTopOf="@id/gvDaily" />
+
+        <TextView
+            android:id="@+id/tvLowValueDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/tvLowTimeDay"
+            app:layout_constraintLeft_toLeftOf="@id/gvDaily" />
+
+        <TextView
+            android:id="@+id/tvHighTimeDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/gvDaily"
+            app:layout_constraintRight_toRightOf="@id/gvDaily" />
+
+        <TextView
+            android:id="@+id/tvLowTimeDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/gvDaily"
+            app:layout_constraintLeft_toLeftOf="@id/gvDaily" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/btgDaily"
@@ -29,32 +67,78 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="7" />
+
+                android:text="1d" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/bDaily3"
+                android:id="@+id/bDaily7"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="14"
+                android:text="7d" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bDaily14"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="14d"
 
                 />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/bDaily5"
+                android:id="@+id/bDaily30"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="28"
+                android:text="30d"
 
                 />
         </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:id="@+id/tvHourLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value by hour"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btgDaily" />
 
         <com.magus.cryptocompare.ui.main.GraphView
             android:id="@+id/gvHourly"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            app:layout_constraintTop_toBottomOf="@id/btgDaily" />
+            android:padding="8dp"
+
+            app:layout_constraintTop_toBottomOf="@id/tvHourLabel" />
+
+        <TextView
+            android:id="@+id/tvHighTimeHourly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/gvHourly"
+            app:layout_constraintRight_toRightOf="@id/gvHourly" />
+
+        <TextView
+            android:id="@+id/tvLowTimeHourly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/gvHourly"
+            app:layout_constraintLeft_toLeftOf="@id/gvHourly" />
+
+        <TextView
+            android:id="@+id/tvHighValueHour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@id/gvHourly"
+            app:layout_constraintTop_toTopOf="@id/gvHourly" />
+
+        <TextView
+            android:id="@+id/tvLowValueHour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/tvLowTimeHourly"
+            app:layout_constraintLeft_toLeftOf="@id/gvHourly" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/btgHourly"
@@ -67,40 +151,77 @@
             app:singleSelection="true">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/bHourly1"
+                android:id="@+id/bHourly24"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="8"
+                android:text="24h"
 
                 />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/bHourly3"
+                android:id="@+id/bHourly72"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="24"
+                android:text="72h"
 
                 />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/bHourly5"
+                android:id="@+id/bHourly168"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="60"
+                android:text="168h"
 
                 />
         </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:id="@+id/tvMinuteLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value by day"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btgHourly" />
 
         <com.magus.cryptocompare.ui.main.GraphView
             android:id="@+id/gvMinute"
             android:layout_width="match_parent"
             android:layout_height="300dp"
+            android:padding="8dp"
 
-            app:layout_constraintTop_toBottomOf="@id/btgHourly"
+            app:layout_constraintTop_toBottomOf="@id/tvMinuteLabel"
             app:selectionRequired="true" />
+
+        <TextView
+            android:id="@+id/tvHighValueMinute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@id/gvMinute"
+            app:layout_constraintTop_toTopOf="@id/gvMinute" />
+
+        <TextView
+            android:id="@+id/tvLowValueMinute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/tvLowTimeMinute"
+            app:layout_constraintLeft_toLeftOf="@id/gvMinute" />
+
+        <TextView
+            android:id="@+id/tvHighTimeMinute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/gvMinute"
+            app:layout_constraintRight_toRightOf="@id/gvMinute" />
+
+        <TextView
+            android:id="@+id/tvLowTimeMinute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/gvMinute"
+            app:layout_constraintLeft_toLeftOf="@id/gvMinute" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/btgMinute"
@@ -112,29 +233,29 @@
             app:singleSelection="true">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/bMinute1"
+                android:id="@+id/bMinute60"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="10"
+                android:text="60m"
 
                 />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/bMinute3"
+                android:id="@+id/bMinute180"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="30"
+                android:text="180m"
 
                 />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/bMinute5"
+                android:id="@+id/bMinute1440"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="60"
+                android:text="1440m"
 
                 />
         </com.google.android.material.button.MaterialButtonToggleGroup>

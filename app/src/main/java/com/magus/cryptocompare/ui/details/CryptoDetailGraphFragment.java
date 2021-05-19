@@ -1,11 +1,9 @@
 package com.magus.cryptocompare.ui.details;
 
-import android.graphics.Path;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,22 +13,22 @@ import com.magus.cryptocompare.databinding.FragmentCryptoDetailGraphBinding;
 import com.magus.cryptocompare.ui.main.MainViewModel;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.format.DateTimeFormatter;
 
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
-import static com.magus.cryptocompare.ui.main.MainViewModel.CryptoDataType.BYMINUTE;
-import static com.magus.cryptocompare.ui.main.MainViewModel.CryptoDataType.DAILY;
-import static com.magus.cryptocompare.ui.main.MainViewModel.CryptoDataType.HOURLY;
+import static com.magus.cryptocompare.ui.main.MainViewModel.TimeIncrementType.BYMINUTE;
+import static com.magus.cryptocompare.ui.main.MainViewModel.TimeIncrementType.DAILY;
+import static com.magus.cryptocompare.ui.main.MainViewModel.TimeIncrementType.HOURLY;
 
 public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
     FragmentCryptoDetailGraphBinding binding;
-    HashMap<MainViewModel.CryptoDataType, Integer> limitHashMap = new HashMap<>();
 
     public static CryptoDetailGraphFragment newInstance(String symbol) {
 
@@ -63,9 +61,11 @@ public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
             @Override
             public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
                 if (isChecked) {
-                    if (checkedId == binding.bDaily1.getId()) limitHashMap.put(DAILY, 7);
-                    else if (checkedId == binding.bDaily3.getId()) limitHashMap.put(DAILY, 14);
-                    else if (checkedId == binding.bDaily5.getId()) limitHashMap.put(DAILY, 28);
+                    if (checkedId == binding.bDaily1.getId()) mViewModel.putLimit(DAILY, 1);
+                    else if (checkedId == binding.bDaily7.getId()) mViewModel.putLimit(DAILY, 7);
+                    else if (checkedId == binding.bDaily14.getId()) mViewModel.putLimit(DAILY, 14);
+                    else if (checkedId == binding.bDaily30.getId()) mViewModel.putLimit(DAILY, 30);
+
                     initGraph(DAILY);
 
                 }
@@ -75,9 +75,11 @@ public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
             @Override
             public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
                 if (isChecked) {
-                    if (checkedId == binding.bMinute1.getId()) limitHashMap.put(BYMINUTE, 10);
-                    else if (checkedId == binding.bMinute3.getId()) limitHashMap.put(BYMINUTE, 30);
-                    else if (checkedId == binding.bMinute5.getId()) limitHashMap.put(BYMINUTE, 60);
+                    if (checkedId == binding.bMinute60.getId()) mViewModel.putLimit(BYMINUTE, 60);
+                    else if (checkedId == binding.bMinute180.getId())
+                        mViewModel.putLimit(BYMINUTE, 180);
+                    else if (checkedId == binding.bMinute1440.getId())
+                        mViewModel.putLimit(BYMINUTE, 1440);
                     initGraph(BYMINUTE);
 
                 }
@@ -88,9 +90,11 @@ public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
             @Override
             public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
                 if (isChecked) {
-                    if (checkedId == binding.bHourly1.getId()) limitHashMap.put(HOURLY, 8);
-                    else if (checkedId == binding.bHourly3.getId()) limitHashMap.put(HOURLY, 24);
-                    else if (checkedId == binding.bHourly5.getId()) limitHashMap.put(HOURLY, 60);
+                    if (checkedId == binding.bHourly24.getId()) mViewModel.putLimit(HOURLY, 24);
+                    else if (checkedId == binding.bHourly72.getId())
+                        mViewModel.putLimit(HOURLY, 72);
+                    else if (checkedId == binding.bHourly168.getId())
+                        mViewModel.putLimit(HOURLY, 168);
                     initGraph(HOURLY);
 
                 }
@@ -98,35 +102,83 @@ public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
         });
     }
 
-    private void initGraph(MainViewModel.CryptoDataType type) {
-        mViewModel.getGraphPath(type, symbol, "BTC", limitHashMap.get(type) == null ? 10 : limitHashMap.get(type)).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new SingleObserver<Path>() {
+    private void initGraph(MainViewModel.TimeIncrementType type) {
+        mViewModel.getGraphPathAndData(type, symbol, "BTC").subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new SingleObserver<PathDataModel>() {
             @Override
             public void onSubscribe(@NotNull Disposable d) {
 
             }
 
             @Override
-            public void onSuccess(@NotNull Path path) {
+            public void onSuccess(@NotNull PathDataModel path) {
+                LocalDateTime minTime = null;
+                LocalDateTime maxTime = null;
+                if (path.getMinTime() != Long.MAX_VALUE)
+                    minTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(path.getMinTime()), ZoneId.systemDefault());
+                if (path.getMaxTime() != Long.MIN_VALUE)
+                    maxTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(path.getMaxTime()), ZoneId.systemDefault());
+
                 //binding.gvDaily.drawGraph(path, mViewModel.getPaint(type));
                 switch (type) {
                     case DAILY:
                         binding.gvDaily.drawGraph(path, mViewModel.getPaint(type));
+                        if (path.getMaxHigh() != Double.MIN_VALUE)
+                            binding.tvHighValueDay.setText(Double.toString(path.getMaxHigh()));
+                        if (path.getMinHigh() != Double.MAX_VALUE)
+                            binding.tvLowValueDay.setText(Double.toString(path.getMinHigh()));
+                        if (maxTime != null)
+                            binding.tvHighTimeDay.setText(parseDate(maxTime, type));
+                        if (minTime != null) binding.tvLowTimeDay.setText(parseDate(minTime, type));
+
+
                         break;
                     case BYMINUTE:
                         binding.gvMinute.drawGraph(path, mViewModel.getPaint(type));
+                        if (path.getMaxHigh() != Double.MIN_VALUE)
+                            binding.tvHighValueMinute.setText(Double.toString(path.getMaxHigh()));
+                        if (path.getMinHigh() != Double.MAX_VALUE)
+                            binding.tvLowValueMinute.setText(Double.toString(path.getMinHigh()));
+                        if (maxTime != null)
+                            binding.tvHighTimeMinute.setText(parseDate(maxTime, type));
+                        if (minTime != null)
+                            binding.tvLowTimeMinute.setText(parseDate(minTime, type));
                         break;
                     case HOURLY:
                         binding.gvHourly.drawGraph(path, mViewModel.getPaint(type));
+                        if (path.getMaxHigh() != Double.MIN_VALUE)
+                            binding.tvHighValueHour.setText(Double.toString(path.getMaxHigh()));
+                        if (path.getMinHigh() != Double.MAX_VALUE)
+                            binding.tvLowValueHour.setText(Double.toString(path.getMinHigh()));
+                        if (maxTime != null)
+                            binding.tvHighTimeHourly.setText(parseDate(maxTime, type));
+                        if (minTime != null)
+                            binding.tvLowTimeHourly.setText(parseDate(minTime, type));
                         break;
                 }
             }
 
             @Override
             public void onError(@NotNull Throwable e) {
-                Timber.e(e);
-                Toast.makeText(getContext(), "It appears we can't get data for the specified crypto!", Toast.LENGTH_SHORT).show();
+                handleError(e.getMessage());
             }
         });
+    }
+
+    private String parseDate(LocalDateTime dateTime, MainViewModel.TimeIncrementType type) {
+        try {
+            switch (type) {
+                case HOURLY:
+                case DAILY:
+                    return dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                case BYMINUTE:
+                    return dateTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
+            }
+        } catch (Exception e) {
+            return "";
+        }
+        return "";
+
+
     }
 }

@@ -3,15 +3,17 @@ package com.magus.cryptocompare.ui.main;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.magus.cryptocompare.ui.details.PathDataModel;
+
 public class GraphView extends View {
-    private Path path;
+    private PathDataModel path;
     private Paint paint;
+
     public GraphView(Context context) {
         super(context);
     }
@@ -21,7 +23,7 @@ public class GraphView extends View {
         super(context, attrs);
     }
 
-    public void drawGraph(Path path, Paint paint) {
+    public void drawGraph(PathDataModel path, Paint paint) {
         this.paint = paint;
         this.path = path;
         invalidate();
@@ -31,9 +33,11 @@ public class GraphView extends View {
 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (path != null && paint != null) canvas.drawPath(path, paint);
+        if (path != null && paint != null) {
+            canvas.drawPath(path.getPath(), paint);
+
+        }
+
 
     }
-
-
 }

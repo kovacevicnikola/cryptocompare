@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.magus.cryptocompare.R;
-import com.magus.cryptocompare.api.schemas.CoinSchema;
 import com.magus.cryptocompare.databinding.ListItemCryptoBinding;
+import com.magus.cryptocompare.datasource.database.CoinEntity;
 import com.magus.cryptocompare.ui.details.CryptoDetailFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CryptoRecyclerViewAdapter extends RecyclerView.Adapter<CryptoRecyclerViewAdapter.CryptoViewHolder> {
-    List<CoinSchema> coinList = new ArrayList<>();
+    List<CoinEntity> coinList = new ArrayList<>();
     String baseURL;
     FragmentManager fragmentManager;
 
@@ -37,7 +37,7 @@ public class CryptoRecyclerViewAdapter extends RecyclerView.Adapter<CryptoRecycl
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull CryptoViewHolder holder, int position) {
-        CoinSchema currentCoin = coinList.get(position);
+        CoinEntity currentCoin = coinList.get(position);
         holder.binding.tvCryptoCode.setText(currentCoin.getSymbol());
         holder.binding.tvCryptoName.setText(currentCoin.getFullName());
         Glide.with(holder.binding.ivCryptoIcon)
@@ -54,7 +54,7 @@ public class CryptoRecyclerViewAdapter extends RecyclerView.Adapter<CryptoRecycl
         return coinList.size();
     }
 
-    public void bindData(List<CoinSchema> coinList) {
+    public void bindData(List<CoinEntity> coinList) {
         this.coinList = coinList;
         notifyDataSetChanged();
 
