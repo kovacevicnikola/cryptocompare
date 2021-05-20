@@ -34,9 +34,8 @@ import static com.magus.cryptocompare.ui.list.CryptoListPickerDialogFragment.ARG
 
 public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
     FragmentCryptoDetailGraphBinding binding;
-    public static String REQUEST_CODE_TSYM = "1337";
     String toSymbol = "BTC";
-
+    public static String REQUEST_CODE_TSYM = "1337";
     public static CryptoDetailGraphFragment newInstance(String symbol) {
 
         Bundle args = new Bundle();

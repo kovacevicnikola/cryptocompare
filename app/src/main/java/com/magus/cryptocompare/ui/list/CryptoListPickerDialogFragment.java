@@ -75,7 +75,6 @@ public class CryptoListPickerDialogFragment extends DialogFragment implements On
             }
         });
     }
-
     @Override
     public void onCryptoPicked(String symbol) {
         Bundle result = new Bundle();

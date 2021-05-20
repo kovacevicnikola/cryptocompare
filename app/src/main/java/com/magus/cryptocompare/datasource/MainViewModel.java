@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.magus.cryptocompare.datasource.api.schemas.PriceAndVolumeSchema;
+import com.magus.cryptocompare.datasource.database.CoinEntity;
 import com.magus.cryptocompare.pojo.Background;
 import com.magus.cryptocompare.pojo.PathDataModel;
 
@@ -31,8 +32,8 @@ public class MainViewModel extends AndroidViewModel {
     float chartHeightPx;
     HashMap<TimeIncrementType, Integer> limitHashMap = new HashMap<>();
     private CryptoDataSource dataSource;
-    float chartWidthPx;
     private Paint backgroundPaint;
+    float chartWidthPx;
 
     public MainViewModel(@NonNull @NotNull Application application) {
         super(application);
@@ -93,6 +94,10 @@ public class MainViewModel extends AndroidViewModel {
         }
         return null;
 
+    }
+
+    public Single<List<CoinEntity>> getCoins() {
+        return dataSource.getCryptoCoinList();
     }
 
     public Single<PathDataModel> getGraphPathAndData(TimeIncrementType type, String valueFrom, String valueTo) {
@@ -161,7 +166,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     private Background generateBackground(Paint paint) {
-        return new Background(50, chartWidthPx, chartHeightPx, paint);
+        return new Background(40, chartWidthPx, chartHeightPx, paint);
     }
 
     public Single<LinkedHashMap<String, String>> getCoinExchangeRate(String symbolFrom, String[] symbolsTo) {

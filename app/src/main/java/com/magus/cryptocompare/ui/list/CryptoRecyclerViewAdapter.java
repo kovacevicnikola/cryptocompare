@@ -21,7 +21,6 @@ public class CryptoRecyclerViewAdapter extends RecyclerView.Adapter<CryptoRecycl
     List<CoinEntity> coinList = new ArrayList<>();
     String baseURL;
     OnCryptoPickedListener listener;
-
     public CryptoRecyclerViewAdapter(String baseURL, OnCryptoPickedListener listener) {
         this.baseURL = baseURL;
         this.listener = listener;
