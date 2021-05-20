@@ -10,7 +10,9 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.magus.cryptocompare.databinding.FragmentCryptoDetailGraphBinding;
-import com.magus.cryptocompare.ui.main.MainViewModel;
+import com.magus.cryptocompare.datasource.MainViewModel;
+import com.magus.cryptocompare.pojo.PathDataModel;
+import com.magus.cryptocompare.ui.list.CryptoListPickerDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.threeten.bp.Instant;
@@ -18,17 +20,22 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatter;
 
+import java.util.Locale;
+
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.magus.cryptocompare.ui.main.MainViewModel.TimeIncrementType.BYMINUTE;
-import static com.magus.cryptocompare.ui.main.MainViewModel.TimeIncrementType.DAILY;
-import static com.magus.cryptocompare.ui.main.MainViewModel.TimeIncrementType.HOURLY;
+import static com.magus.cryptocompare.datasource.MainViewModel.TimeIncrementType.BYMINUTE;
+import static com.magus.cryptocompare.datasource.MainViewModel.TimeIncrementType.DAILY;
+import static com.magus.cryptocompare.datasource.MainViewModel.TimeIncrementType.HOURLY;
+import static com.magus.cryptocompare.ui.list.CryptoListPickerDialogFragment.ARG_TO_SYMBOL;
 
 public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
     FragmentCryptoDetailGraphBinding binding;
+    public static String REQUEST_CODE_TSYM = "1337";
+    String toSymbol = "BTC";
 
     public static CryptoDetailGraphFragment newInstance(String symbol) {
 
@@ -54,9 +61,7 @@ public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
     }
 
     private void initUI() {
-        initGraph(HOURLY);
-        initGraph(DAILY);
-        initGraph(BYMINUTE);
+        refreshGraphs();
         binding.btgDaily.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
             @Override
             public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
@@ -99,11 +104,28 @@ public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
 
                 }
             }
+
+        });
+        binding.fab.setOnClickListener(v -> {
+            new CryptoListPickerDialogFragment().show(getChildFragmentManager(), null);
+            getChildFragmentManager().setFragmentResultListener(REQUEST_CODE_TSYM, getViewLifecycleOwner(), (requestKey, result) -> {
+                if (requestKey.equals(REQUEST_CODE_TSYM)) {
+                    toSymbol = result.getString(ARG_TO_SYMBOL);
+                    refreshGraphs();
+                }
+            });
         });
     }
 
+    private void refreshGraphs() {
+        binding.tvFab.setText(toSymbol);
+        initGraph(HOURLY);
+        initGraph(DAILY);
+        initGraph(BYMINUTE);
+    }
+
     private void initGraph(MainViewModel.TimeIncrementType type) {
-        mViewModel.getGraphPathAndData(type, symbol, "BTC").subscribeOn(Schedulers.io())
+        mViewModel.getGraphPathAndData(type, symbol, toSymbol).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new SingleObserver<PathDataModel>() {
             @Override
             public void onSubscribe(@NotNull Disposable d) {
@@ -119,60 +141,92 @@ public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
                 if (path.getMaxTime() != Long.MIN_VALUE)
                     maxTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(path.getMaxTime()), ZoneId.systemDefault());
 
-                //binding.gvDaily.drawGraph(path, mViewModel.getPaint(type));
                 switch (type) {
                     case DAILY:
-                        binding.gvDaily.drawGraph(path, mViewModel.getPaint(type));
+                        binding.graphDay.graphView.setVisibility(View.VISIBLE);
+                        binding.graphDay.tvError.setVisibility(View.GONE);
+                        binding.graphDay.graphView.drawGraph(path, mViewModel.getPaint(type));
                         if (path.getMaxHigh() != Double.MIN_VALUE)
-                            binding.tvHighValueDay.setText(Double.toString(path.getMaxHigh()));
+                            binding.graphDay.tvHighValue.setText(String.format(Locale.getDefault(), "%f", path.getMaxHigh()));
                         if (path.getMinHigh() != Double.MAX_VALUE)
-                            binding.tvLowValueDay.setText(Double.toString(path.getMinHigh()));
+                            binding.graphDay.tvLowValue.setText(String.format(Locale.getDefault(), "%f", path.getMinHigh()));
                         if (maxTime != null)
-                            binding.tvHighTimeDay.setText(parseDate(maxTime, type));
-                        if (minTime != null) binding.tvLowTimeDay.setText(parseDate(minTime, type));
-
-
+                            binding.graphDay.tvTimeRight.setText(parseDate(maxTime, type));
+                        if (minTime != null)
+                            binding.graphDay.tvTimeLeft.setText(parseDate(minTime, type));
                         break;
                     case BYMINUTE:
-                        binding.gvMinute.drawGraph(path, mViewModel.getPaint(type));
+                        binding.graphMinute.graphView.setVisibility(View.VISIBLE);
+                        binding.graphMinute.tvError.setVisibility(View.GONE);
+                        binding.graphMinute.graphView.drawGraph(path, mViewModel.getPaint(type));
                         if (path.getMaxHigh() != Double.MIN_VALUE)
-                            binding.tvHighValueMinute.setText(Double.toString(path.getMaxHigh()));
+                            binding.graphMinute.tvHighValue.setText(String.format(Locale.getDefault(), "%f", path.getMaxHigh()));
                         if (path.getMinHigh() != Double.MAX_VALUE)
-                            binding.tvLowValueMinute.setText(Double.toString(path.getMinHigh()));
+                            binding.graphMinute.tvLowValue.setText(String.format(Locale.getDefault(), "%f", path.getMinHigh()));
                         if (maxTime != null)
-                            binding.tvHighTimeMinute.setText(parseDate(maxTime, type));
+                            binding.graphMinute.tvTimeRight.setText(parseDate(maxTime, type));
                         if (minTime != null)
-                            binding.tvLowTimeMinute.setText(parseDate(minTime, type));
+                            binding.graphMinute.tvTimeLeft.setText(parseDate(minTime, type));
+
                         break;
                     case HOURLY:
-                        binding.gvHourly.drawGraph(path, mViewModel.getPaint(type));
+                        binding.graphHour.graphView.setVisibility(View.VISIBLE);
+                        binding.graphHour.tvError.setVisibility(View.GONE);
+                        binding.graphHour.graphView.drawGraph(path, mViewModel.getPaint(type));
                         if (path.getMaxHigh() != Double.MIN_VALUE)
-                            binding.tvHighValueHour.setText(Double.toString(path.getMaxHigh()));
+                            binding.graphHour.tvHighValue.setText(String.format(Locale.getDefault(), "%f", path.getMaxHigh()));
                         if (path.getMinHigh() != Double.MAX_VALUE)
-                            binding.tvLowValueHour.setText(Double.toString(path.getMinHigh()));
+                            binding.graphHour.tvLowValue.setText(String.format(Locale.getDefault(), "%f", path.getMinHigh()));
                         if (maxTime != null)
-                            binding.tvHighTimeHourly.setText(parseDate(maxTime, type));
+                            binding.graphHour.tvTimeRight.setText(parseDate(maxTime, type));
                         if (minTime != null)
-                            binding.tvLowTimeHourly.setText(parseDate(minTime, type));
+                            binding.graphHour.tvTimeLeft.setText(parseDate(minTime, type));
+
                         break;
                 }
             }
 
             @Override
             public void onError(@NotNull Throwable e) {
-                handleError(e.getMessage());
+                handleErrorByType(e.getMessage(), type);
             }
         });
+    }
+
+    private void handleErrorByType(String message, MainViewModel.TimeIncrementType type) {
+        if (isAdded()) {
+            switch (type) {
+                case HOURLY: {
+                    binding.graphHour.graphView.setVisibility(View.GONE);
+                    binding.graphHour.tvError.setText(message);
+                    binding.graphHour.tvError.setVisibility(View.VISIBLE);
+                }
+                case DAILY: {
+                    binding.graphDay.graphView.setVisibility(View.GONE);
+
+                    binding.graphDay.tvError.setText(message);
+                    binding.graphDay.tvError.setVisibility(View.VISIBLE);
+
+                }
+                case BYMINUTE: {
+                    binding.graphMinute.graphView.setVisibility(View.GONE);
+                    binding.graphMinute.tvError.setText(message);
+                    binding.graphMinute.tvError.setVisibility(View.VISIBLE);
+
+                }
+            }
+        }
     }
 
     private String parseDate(LocalDateTime dateTime, MainViewModel.TimeIncrementType type) {
         try {
             switch (type) {
                 case HOURLY:
+                    return dateTime.format(DateTimeFormatter.ofPattern("dd.MM HH:mm").withLocale(Locale.getDefault()));
                 case DAILY:
-                    return dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                    return dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy.").withLocale(Locale.getDefault()));
                 case BYMINUTE:
-                    return dateTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
+                    return dateTime.format(DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.getDefault()));
             }
         } catch (Exception e) {
             return "";

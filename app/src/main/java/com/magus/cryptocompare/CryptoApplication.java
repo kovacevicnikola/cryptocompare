@@ -1,4 +1,4 @@
-package com.magus.cryptocompare.ui.main;
+package com.magus.cryptocompare;
 
 import android.app.Application;
 import android.content.Context;

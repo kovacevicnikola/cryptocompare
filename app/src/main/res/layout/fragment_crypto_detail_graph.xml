@@ -1,263 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/black" />
+
+    <TextView
+        android:id="@+id/tvFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="6dp"
+        android:text="OK"
+        android:textColor="#fff"
+        android:textSize="16sp"
+        app:layout_anchor="@id/fab"
+        app:layout_anchorGravity="center" />
+
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tvDayLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Value by day"
-            app:layout_constraintBottom_toTopOf="@id/gvDaily"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.magus.cryptocompare.ui.main.GraphView
-            android:id="@+id/gvDaily"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
             android:padding="8dp"
-            app:layout_constraintTop_toBottomOf="@id/tvDayLabel" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvHighValueDay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="@id/gvDaily"
-            app:layout_constraintTop_toTopOf="@id/gvDaily" />
 
-        <TextView
-            android:id="@+id/tvLowValueDay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/tvLowTimeDay"
-            app:layout_constraintLeft_toLeftOf="@id/gvDaily" />
-
-        <TextView
-            android:id="@+id/tvHighTimeDay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/gvDaily"
-            app:layout_constraintRight_toRightOf="@id/gvDaily" />
-
-        <TextView
-            android:id="@+id/tvLowTimeDay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/gvDaily"
-            app:layout_constraintLeft_toLeftOf="@id/gvDaily" />
-
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/btgDaily"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@+id/gvDaily"
-            app:selectionRequired="true"
-            app:singleSelection="true">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bDaily1"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
+            <include
+                android:id="@+id/graphDay"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                layout="@layout/layout_graph"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                android:text="1d" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bDaily7"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/btgDaily"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="7d" />
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                app:checkedButton="@+id/bDaily1"
+                app:layout_constraintTop_toBottomOf="@+id/graphDay"
+                app:selectionRequired="true"
+                app:singleSelection="true">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bDaily14"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bDaily1"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="1d" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bDaily7"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="7d" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bDaily14"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="14d"
+
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bDaily30"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="30d"
+
+                    />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <include
+                android:id="@+id/graphHour"
+                layout="@layout/layout_graph"
                 android:layout_height="wrap_content"
-                android:text="14d"
+                android:layout_width="match_parent"
+                app:layout_constraintTop_toBottomOf="@+id/btgDaily" />
 
-                />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bDaily30"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/btgHourly"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="30d"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                app:checkedButton="@+id/bHourly24"
 
-                />
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+                app:layout_constraintTop_toBottomOf="@+id/graphHour"
+                app:selectionRequired="true"
+                app:singleSelection="true">
 
-        <TextView
-            android:id="@+id/tvHourLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Value by hour"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btgDaily" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bHourly24"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="24h"
 
-        <com.magus.cryptocompare.ui.main.GraphView
-            android:id="@+id/gvHourly"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:padding="8dp"
+                    />
 
-            app:layout_constraintTop_toBottomOf="@id/tvHourLabel" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bHourly72"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="72h"
 
-        <TextView
-            android:id="@+id/tvHighTimeHourly"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/gvHourly"
-            app:layout_constraintRight_toRightOf="@id/gvHourly" />
+                    />
 
-        <TextView
-            android:id="@+id/tvLowTimeHourly"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/gvHourly"
-            app:layout_constraintLeft_toLeftOf="@id/gvHourly" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bHourly168"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="168h"
 
-        <TextView
-            android:id="@+id/tvHighValueHour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="@id/gvHourly"
-            app:layout_constraintTop_toTopOf="@id/gvHourly" />
+                    />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
-        <TextView
-            android:id="@+id/tvLowValueHour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/tvLowTimeHourly"
-            app:layout_constraintLeft_toLeftOf="@id/gvHourly" />
-
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/btgHourly"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-
-            app:layout_constraintTop_toBottomOf="@+id/gvHourly"
-            app:selectionRequired="true"
-            app:singleSelection="true">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bHourly24"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
+            <include
+                android:id="@+id/graphMinute"
+                layout="@layout/layout_graph"
                 android:layout_height="wrap_content"
-                android:text="24h"
+                android:layout_width="match_parent"
+                app:layout_constraintTop_toBottomOf="@+id/btgHourly" />
 
-                />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bHourly72"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/btgMinute"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="72h"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                app:checkedButton="@+id/bMinute60"
+                app:layout_constraintTop_toBottomOf="@+id/graphMinute"
+                app:selectionRequired="true"
+                app:singleSelection="true">
 
-                />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bMinute60"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="60m"
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bHourly168"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="168h"
+                    />
 
-                />
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bMinute180"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="180m"
 
-        <TextView
-            android:id="@+id/tvMinuteLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Value by day"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btgHourly" />
+                    />
 
-        <com.magus.cryptocompare.ui.main.GraphView
-            android:id="@+id/gvMinute"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:padding="8dp"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bMinute1440"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1440m"
 
-            app:layout_constraintTop_toBottomOf="@id/tvMinuteLabel"
-            app:selectionRequired="true" />
+                    />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
-        <TextView
-            android:id="@+id/tvHighValueMinute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="@id/gvMinute"
-            app:layout_constraintTop_toTopOf="@id/gvMinute" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <TextView
-            android:id="@+id/tvLowValueMinute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/tvLowTimeMinute"
-            app:layout_constraintLeft_toLeftOf="@id/gvMinute" />
-
-        <TextView
-            android:id="@+id/tvHighTimeMinute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/gvMinute"
-            app:layout_constraintRight_toRightOf="@id/gvMinute" />
-
-        <TextView
-            android:id="@+id/tvLowTimeMinute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/gvMinute"
-            app:layout_constraintLeft_toLeftOf="@id/gvMinute" />
-
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/btgMinute"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-
-            app:layout_constraintTop_toBottomOf="@+id/gvMinute"
-            app:singleSelection="true">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bMinute60"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="60m"
-
-                />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bMinute180"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="180m"
-
-                />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bMinute1440"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1440m"
-
-                />
-        </com.google.android.material.button.MaterialButtonToggleGroup>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>

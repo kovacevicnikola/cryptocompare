@@ -20,6 +20,7 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class CryptoDetailExchangeFragment extends BaseCryptoDetailsFragment {
     public static final String[] EXCHANGE_SYMBOLS = new String[]{"BTC", "ETH", "EVN", "DOGE", "ZEC", "USD", "EUR"};
@@ -49,17 +50,19 @@ public class CryptoDetailExchangeFragment extends BaseCryptoDetailsFragment {
                 .subscribe(new SingleObserver<LinkedHashMap<String, String>>() {
                     @Override
                     public void onSubscribe(@NotNull Disposable d) {
-
+                        binding.progressBar.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onSuccess(@NotNull LinkedHashMap<String, String> linkedHashMap) {
+                        binding.progressBar.setVisibility(View.GONE);
                         adapter.bindData(linkedHashMap);
                     }
 
                     @Override
                     public void onError(@NotNull Throwable e) {
-                        handleError(e.getMessage());
+                        handleError("Something went wrong, we can't get the exchange data for the selected coin!");
+                        Timber.e(e);
                     }
                 });
     }

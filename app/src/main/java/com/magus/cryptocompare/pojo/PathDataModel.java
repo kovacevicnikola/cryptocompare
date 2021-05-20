@@ -1,20 +1,30 @@
-package com.magus.cryptocompare.ui.details;
+package com.magus.cryptocompare.pojo;
 
 import android.graphics.Path;
 
 public class PathDataModel {
     Path path;
+    Background background;
     Double minHigh;
     Long minTime;
     Double maxHigh;
     Long maxTime;
 
-    public PathDataModel(Path path, Double minHigh, Long minTime, Double maxHigh, Long maxTime) {
+    public PathDataModel(Path path, Double minHigh, Long minTime, Double maxHigh, Long maxTime, Background background) {
         this.path = path;
         this.minHigh = minHigh;
         this.minTime = minTime;
         this.maxHigh = maxHigh;
         this.maxTime = maxTime;
+        this.background = background;
+    }
+
+    public Background getBackground() {
+        return background;
+    }
+
+    public void setBackground(Background background) {
+        this.background = background;
     }
 
     public Path getPath() {

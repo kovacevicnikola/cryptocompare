@@ -1,4 +1,4 @@
-package com.magus.cryptocompare.ui.main;
+package com.magus.cryptocompare.ui.list;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,13 +8,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.magus.cryptocompare.R;
-import com.magus.cryptocompare.databinding.MainFragmentBinding;
+import com.magus.cryptocompare.databinding.FragmentCryptoListBinding;
+import com.magus.cryptocompare.datasource.MainViewModel;
 import com.magus.cryptocompare.datasource.database.CoinEntity;
+import com.magus.cryptocompare.pojo.OnCryptoPickedListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,22 +26,20 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
-public class CryptoListFragment extends Fragment {
+import static com.magus.cryptocompare.ui.details.CryptoDetailGraphFragment.REQUEST_CODE_TSYM;
 
-    private MainViewModel mViewModel;
-    private MainFragmentBinding binding;
+public class CryptoListPickerDialogFragment extends DialogFragment implements OnCryptoPickedListener {
+    public static String ARG_TO_SYMBOL = "arg_symbol";
+    private FragmentCryptoListBinding binding;
     private CryptoRecyclerViewAdapter adapter;
+    private MainViewModel mViewModel;
 
-    public static CryptoListFragment newInstance() {
-        return new CryptoListFragment();
-    }
-
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = MainFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentCryptoListBinding.inflate(inflater, container, false);
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         return binding.getRoot();
@@ -52,7 +52,7 @@ public class CryptoListFragment extends Fragment {
     }
 
     private void initUI() {
-        adapter = new CryptoRecyclerViewAdapter(getString(R.string.base_image_url), getParentFragmentManager());
+        adapter = new CryptoRecyclerViewAdapter(getString(R.string.base_image_url), this);
         binding.rvCrypto.setAdapter(adapter);
         binding.rvCrypto.setLayoutManager(new LinearLayoutManager(getContext()));
         mViewModel.getCoins().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new SingleObserver<List<CoinEntity>>() {
@@ -71,13 +71,16 @@ public class CryptoListFragment extends Fragment {
 
             @Override
             public void onError(@NotNull Throwable e) {
-                handleError(e.getMessage());
+                Timber.e(e);
             }
         });
     }
 
-    protected void handleError(String message) {
-        if (isAdded()) Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+    @Override
+    public void onCryptoPicked(String symbol) {
+        Bundle result = new Bundle();
+        result.putString(ARG_TO_SYMBOL, symbol);
+        getParentFragmentManager().setFragmentResult(REQUEST_CODE_TSYM, result);
+        dismiss();
     }
-
 }

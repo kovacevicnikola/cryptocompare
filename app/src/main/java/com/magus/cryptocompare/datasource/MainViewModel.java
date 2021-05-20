@@ -1,4 +1,4 @@
-package com.magus.cryptocompare.ui.main;
+package com.magus.cryptocompare.datasource;
 
 import android.app.Application;
 import android.content.res.Resources;
@@ -10,10 +10,9 @@ import android.util.TypedValue;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import com.magus.cryptocompare.datasource.CryptoDataSource;
 import com.magus.cryptocompare.datasource.api.schemas.PriceAndVolumeSchema;
-import com.magus.cryptocompare.datasource.database.CoinEntity;
-import com.magus.cryptocompare.ui.details.PathDataModel;
+import com.magus.cryptocompare.pojo.Background;
+import com.magus.cryptocompare.pojo.PathDataModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,8 +28,11 @@ public class MainViewModel extends AndroidViewModel {
     private Paint paintDaily;
     private Paint paintHourly;
     private Paint paintMinute;
+    float chartHeightPx;
     HashMap<TimeIncrementType, Integer> limitHashMap = new HashMap<>();
     private CryptoDataSource dataSource;
+    float chartWidthPx;
+    private Paint backgroundPaint;
 
     public MainViewModel(@NonNull @NotNull Application application) {
         super(application);
@@ -38,6 +40,14 @@ public class MainViewModel extends AndroidViewModel {
         limitHashMap.put(TimeIncrementType.DAILY, 1);
         limitHashMap.put(TimeIncrementType.HOURLY, 24);
         limitHashMap.put(TimeIncrementType.BYMINUTE, 60);
+        Resources r = getApplication().getResources();
+
+        chartHeightPx = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                CHART_HEIGHT_DP,
+                r.getDisplayMetrics()
+        ) - 4;
+        chartWidthPx = r.getDisplayMetrics().widthPixels - 4;
         generatePaint();
 
     }
@@ -52,18 +62,24 @@ public class MainViewModel extends AndroidViewModel {
         paintDaily.setStrokeWidth(3);
         paintDaily.setColor(Color.GREEN);
         paintDaily.setStyle(Paint.Style.STROKE);
+
         paintHourly = new Paint();
         paintHourly.setAntiAlias(true);
         paintHourly.setStrokeWidth(3);
-        paintDaily.setTextSize(24);
-
         paintHourly.setColor(Color.BLACK);
         paintHourly.setStyle(Paint.Style.STROKE);
+
         paintMinute = new Paint();
         paintMinute.setAntiAlias(true);
         paintMinute.setStrokeWidth(3);
         paintMinute.setColor(Color.RED);
         paintMinute.setStyle(Paint.Style.STROKE);
+
+        backgroundPaint = new Paint();
+        backgroundPaint.setAntiAlias(true);
+        backgroundPaint.setStrokeWidth(1);
+        backgroundPaint.setColor(Color.GRAY);
+        backgroundPaint.setStyle(Paint.Style.STROKE);
     }
 
     public Paint getPaint(TimeIncrementType data) {
@@ -79,24 +95,13 @@ public class MainViewModel extends AndroidViewModel {
 
     }
 
-    Single<List<CoinEntity>> getCoins() {
-        return dataSource.getCryptoCoinList();
-    }
-
     public Single<PathDataModel> getGraphPathAndData(TimeIncrementType type, String valueFrom, String valueTo) {
         Integer limit = limitHashMap.get(type);
         return Single.create(emitter -> {
-            Resources r = getApplication().getResources();
             List<PriceAndVolumeSchema> priceAndVolumeList = new ArrayList<>();
             Path path = new Path();
             boolean initial = true;
 
-            float chartHeightPx = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    CHART_HEIGHT_DP,
-                    r.getDisplayMetrics()
-            );
-            float chartWidthPx = r.getDisplayMetrics().widthPixels;
             try {
                 switch (type) {
                     case DAILY:
@@ -131,6 +136,13 @@ public class MainViewModel extends AndroidViewModel {
                     if (priceAndVolumeSchema.getTime() < minTime)
                         minTime = priceAndVolumeSchema.getTime();
                 }
+                if (maxHigh == 0) {
+                    emitter.onError(new Throwable("All values for this graph are 0!"));
+                    return;
+                } else if (maxTime.equals(minTime)) {
+                    emitter.onError(new Throwable("No data for specified time period!"));
+                    return;
+                }
 
                 for (PriceAndVolumeSchema priceAndVolumeSchema : priceAndVolumeList) {
                     float y = (priceAndVolumeSchema.getHigh().floatValue() - minHigh.floatValue()) / (maxHigh.floatValue() - minHigh.floatValue()) * chartHeightPx;
@@ -141,11 +153,15 @@ public class MainViewModel extends AndroidViewModel {
                         initial = false;
                     } else path.lineTo(x, chartHeightPx - y);
                 }
-                emitter.onSuccess(new PathDataModel(path, minHigh, minTime, maxHigh, maxTime));
+                emitter.onSuccess(new PathDataModel(path, minHigh, minTime, maxHigh, maxTime, generateBackground(backgroundPaint)));
             } catch (Exception e) {
                 emitter.onError(e);
             }
         });
+    }
+
+    private Background generateBackground(Paint paint) {
+        return new Background(50, chartWidthPx, chartHeightPx, paint);
     }
 
     public Single<LinkedHashMap<String, String>> getCoinExchangeRate(String symbolFrom, String[] symbolsTo) {

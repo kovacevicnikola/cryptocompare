@@ -1,17 +1,16 @@
-package com.magus.cryptocompare.ui.main;
+package com.magus.cryptocompare.ui.list;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.magus.cryptocompare.R;
 import com.magus.cryptocompare.databinding.ListItemCryptoBinding;
 import com.magus.cryptocompare.datasource.database.CoinEntity;
-import com.magus.cryptocompare.ui.details.CryptoDetailFragment;
+import com.magus.cryptocompare.pojo.OnCryptoPickedListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,11 +20,11 @@ import java.util.List;
 public class CryptoRecyclerViewAdapter extends RecyclerView.Adapter<CryptoRecyclerViewAdapter.CryptoViewHolder> {
     List<CoinEntity> coinList = new ArrayList<>();
     String baseURL;
-    FragmentManager fragmentManager;
+    OnCryptoPickedListener listener;
 
-    public CryptoRecyclerViewAdapter(String baseURL, FragmentManager fragmentManager) {
+    public CryptoRecyclerViewAdapter(String baseURL, OnCryptoPickedListener listener) {
         this.baseURL = baseURL;
-        this.fragmentManager = fragmentManager;
+        this.listener = listener;
     }
 
     @NonNull
@@ -44,9 +43,7 @@ public class CryptoRecyclerViewAdapter extends RecyclerView.Adapter<CryptoRecycl
                 .load(baseURL + currentCoin.getImageUrl()).override(120, 120)
                 .error(R.drawable.ic_no_image_available)
                 .into(holder.binding.ivCryptoIcon);
-        holder.binding.getRoot().setOnClickListener(v -> {
-            fragmentManager.beginTransaction().replace(R.id.container, CryptoDetailFragment.newInstance(currentCoin.getSymbol())).addToBackStack(null).commit();
-        });
+        holder.binding.getRoot().setOnClickListener(v -> listener.onCryptoPicked(currentCoin.getSymbol()));
     }
 
     @Override
