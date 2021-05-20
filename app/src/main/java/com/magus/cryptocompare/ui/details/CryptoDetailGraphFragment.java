@@ -196,19 +196,19 @@ public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
         if (isAdded()) {
             switch (type) {
                 case HOURLY: {
-                    binding.graphHour.graphView.setVisibility(View.GONE);
+                    binding.graphHour.graphView.setVisibility(View.INVISIBLE);
                     binding.graphHour.tvError.setText(message);
                     binding.graphHour.tvError.setVisibility(View.VISIBLE);
                 }
                 case DAILY: {
-                    binding.graphDay.graphView.setVisibility(View.GONE);
+                    binding.graphDay.graphView.setVisibility(View.INVISIBLE);
 
                     binding.graphDay.tvError.setText(message);
                     binding.graphDay.tvError.setVisibility(View.VISIBLE);
 
                 }
                 case BYMINUTE: {
-                    binding.graphMinute.graphView.setVisibility(View.GONE);
+                    binding.graphMinute.graphView.setVisibility(View.INVISIBLE);
                     binding.graphMinute.tvError.setText(message);
                     binding.graphMinute.tvError.setVisibility(View.VISIBLE);
 
