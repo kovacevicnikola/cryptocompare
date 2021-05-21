@@ -23,9 +23,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import io.reactivex.Single;
+import timber.log.Timber;
 
 public class MainViewModel extends AndroidViewModel {
-    private static float CHART_HEIGHT_DP = 300f;
+    private static float CHART_HEIGHT_DP = 340f;
     private Paint paintDaily;
     private Paint paintHourly;
     private Paint paintMinute;
@@ -47,8 +48,11 @@ public class MainViewModel extends AndroidViewModel {
                 TypedValue.COMPLEX_UNIT_DIP,
                 CHART_HEIGHT_DP,
                 r.getDisplayMetrics()
-        ) - 4;
-        chartWidthPx = r.getDisplayMetrics().widthPixels - 4;
+        );
+        chartWidthPx = r.getDisplayMetrics().widthPixels;//padding
+        Timber.d("chartWidth %f", chartWidthPx);
+        Timber.d("chartHeight %f", chartHeightPx);
+
         generatePaint();
 
     }
@@ -67,7 +71,7 @@ public class MainViewModel extends AndroidViewModel {
         paintHourly = new Paint();
         paintHourly.setAntiAlias(true);
         paintHourly.setStrokeWidth(3);
-        paintHourly.setColor(Color.BLACK);
+        paintHourly.setColor(Color.CYAN);
         paintHourly.setStyle(Paint.Style.STROKE);
 
         paintMinute = new Paint();
@@ -152,7 +156,10 @@ public class MainViewModel extends AndroidViewModel {
                 for (PriceAndVolumeSchema priceAndVolumeSchema : priceAndVolumeList) {
                     float y = (priceAndVolumeSchema.getHigh().floatValue() - minHigh.floatValue()) / (maxHigh.floatValue() - minHigh.floatValue()) * chartHeightPx;
                     float x = (priceAndVolumeSchema.getTime().floatValue() - minTime) / (maxTime.floatValue() - minTime) * chartWidthPx;
-
+                    x = x * 0.95f;
+                    y = y * 0.95f;
+                    Timber.d("%s x %f", type.toString(), x);
+                    Timber.d("%s y %f", type.toString(), chartHeightPx - y);
                     if (initial) {
                         path.moveTo(0, chartHeightPx - y);
                         initial = false;
