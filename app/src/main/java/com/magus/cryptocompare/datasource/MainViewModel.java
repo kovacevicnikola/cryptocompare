@@ -156,8 +156,8 @@ public class MainViewModel extends AndroidViewModel {
                 for (PriceAndVolumeSchema priceAndVolumeSchema : priceAndVolumeList) {
                     float y = (priceAndVolumeSchema.getHigh().floatValue() - minHigh.floatValue()) / (maxHigh.floatValue() - minHigh.floatValue()) * chartHeightPx;
                     float x = (priceAndVolumeSchema.getTime().floatValue() - minTime) / (maxTime.floatValue() - minTime) * chartWidthPx;
-                    x = x * 0.95f;
-                    y = y * 0.95f;
+                    x = x * 0.95f; //padding
+                    y = y * 0.95f; //padding
                     Timber.d("%s x %f", type.toString(), x);
                     Timber.d("%s y %f", type.toString(), chartHeightPx - y);
                     if (initial) {
