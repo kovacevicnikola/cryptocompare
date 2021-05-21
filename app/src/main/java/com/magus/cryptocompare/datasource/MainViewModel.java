@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import io.reactivex.Single;
-import timber.log.Timber;
 
 public class MainViewModel extends AndroidViewModel {
     private static float CHART_HEIGHT_DP = 340f;
@@ -49,9 +48,8 @@ public class MainViewModel extends AndroidViewModel {
                 CHART_HEIGHT_DP,
                 r.getDisplayMetrics()
         );
-        chartWidthPx = r.getDisplayMetrics().widthPixels;//padding
-        Timber.d("chartWidth %f", chartWidthPx);
-        Timber.d("chartHeight %f", chartHeightPx);
+        chartWidthPx = r.getDisplayMetrics().widthPixels;
+
 
         generatePaint();
 
@@ -158,8 +156,7 @@ public class MainViewModel extends AndroidViewModel {
                     float x = (priceAndVolumeSchema.getTime().floatValue() - minTime) / (maxTime.floatValue() - minTime) * chartWidthPx;
                     x = x * 0.95f; //padding
                     y = y * 0.95f; //padding
-                    Timber.d("%s x %f", type.toString(), x);
-                    Timber.d("%s y %f", type.toString(), chartHeightPx - y);
+
                     if (initial) {
                         path.moveTo(0, chartHeightPx - y);
                         initial = false;
