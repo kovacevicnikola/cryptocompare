@@ -60,12 +60,12 @@ public class CryptoDataSource {
     public Single<List<CoinEntity>> getCryptoCoinList() {
         return Single.create(emitter -> {
             List<CoinEntity> coins;
-            Response<ResponseModel> response = service.getCryptoCoinList(true, apiKey).execute();
+            Response<ResponseModel> response = service.getCryptoCoinList(false, apiKey).execute();
             if (response.isSuccessful() && response.body() != null) {
                 coins = new ArrayList<>();
                 for (Map.Entry<String, Object> entry : response.body().getData().getAdditionalProperties().entrySet()) {
                     try {
-                        coins.add(new CoinEntity((LinkedHashMap<String, String>) entry.getValue()));
+                        coins.add(new CoinEntity((LinkedHashMap<String, Object>) entry.getValue()));
                     } catch (Exception e) {
                         Timber.e(e);
                     }
