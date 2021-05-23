@@ -1,6 +1,7 @@
 package com.magus.cryptocompare.ui.details;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +28,10 @@ public class CryptoDetailExchangeFragment extends BaseCryptoDetailsFragment {
     FragmentCryptoDetailExchangeBinding binding;
     CryptoDetailExchangeRecyclerViewAdapter adapter;
 
-    public static CryptoDetailExchangeFragment newInstance(String symbol) {
+    public static CryptoDetailExchangeFragment newInstance(Parcelable coin) {
 
         Bundle args = new Bundle();
-        args.putString(ARG_SYMBOL, symbol);
+        args.putParcelable(ARG_COIN, coin);
         CryptoDetailExchangeFragment fragment = new CryptoDetailExchangeFragment();
         fragment.setArguments(args);
         return fragment;
@@ -43,10 +44,10 @@ public class CryptoDetailExchangeFragment extends BaseCryptoDetailsFragment {
     }
 
     private void initUI() {
-        adapter = new CryptoDetailExchangeRecyclerViewAdapter();
+        adapter = new CryptoDetailExchangeRecyclerViewAdapter(coin.getLabelValueHashMap());
         binding.rvExchangeRates.setAdapter(adapter);
         binding.rvExchangeRates.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        mViewModel.getCoinExchangeRate(symbol, EXCHANGE_SYMBOLS).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        mViewModel.getCoinExchangeRate(coin.getSymbol(), EXCHANGE_SYMBOLS).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<LinkedHashMap<String, String>>() {
                     @Override
                     public void onSubscribe(@NotNull Disposable d) {

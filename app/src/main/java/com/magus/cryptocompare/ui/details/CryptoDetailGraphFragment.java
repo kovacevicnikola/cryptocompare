@@ -1,6 +1,7 @@
 package com.magus.cryptocompare.ui.details;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,10 +37,11 @@ public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
     FragmentCryptoDetailGraphBinding binding;
     String toSymbol = "BTC";
     public static String REQUEST_CODE_TSYM = "1337";
-    public static CryptoDetailGraphFragment newInstance(String symbol) {
+
+    public static CryptoDetailGraphFragment newInstance(Parcelable coin) {
 
         Bundle args = new Bundle();
-        args.putString(ARG_SYMBOL, symbol);
+        args.putParcelable(ARG_COIN, coin);
         CryptoDetailGraphFragment fragment = new CryptoDetailGraphFragment();
         fragment.setArguments(args);
         return fragment;
@@ -124,7 +126,7 @@ public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
     }
 
     private void initGraph(MainViewModel.TimeIncrementType type) {
-        mViewModel.getGraphPathAndData(type, symbol, toSymbol).subscribeOn(Schedulers.io())
+        mViewModel.getGraphPathAndData(type, coin.getSymbol(), toSymbol).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new SingleObserver<PathDataModel>() {
             @Override
             public void onSubscribe(@NotNull Disposable d) {

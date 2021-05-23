@@ -17,6 +17,11 @@ import java.util.LinkedHashMap;
 public class CryptoDetailExchangeRecyclerViewAdapter extends RecyclerView.Adapter<CryptoDetailExchangeRecyclerViewAdapter.ExchangeViewHolder> {
     LinkedHashMap<String, String> data = new LinkedHashMap<>();
 
+    public CryptoDetailExchangeRecyclerViewAdapter(LinkedHashMap<String, String> labelValueHashMap) {
+        data.putAll(labelValueHashMap);
+
+    }
+
     @NonNull
     @NotNull
     @Override
@@ -26,7 +31,7 @@ public class CryptoDetailExchangeRecyclerViewAdapter extends RecyclerView.Adapte
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull CryptoDetailExchangeRecyclerViewAdapter.ExchangeViewHolder holder, int position) {
-        holder.binding.tvCodeAndValue.setText(String.format("%s : %s", data.keySet().toArray(new String[0])[position], data.values().toArray(new String[0])[position]));
+        holder.binding.tvLabelAndValue.setText(String.format("%s : %s", data.keySet().toArray(new String[0])[position], data.values().toArray(new String[0])[position]));
 
     }
 
@@ -36,7 +41,7 @@ public class CryptoDetailExchangeRecyclerViewAdapter extends RecyclerView.Adapte
     }
 
     public void bindData(LinkedHashMap<String, String> data) {
-        this.data = data;
+        this.data.putAll(data);
         notifyDataSetChanged();
     }
 

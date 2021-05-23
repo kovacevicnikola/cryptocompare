@@ -5,7 +5,6 @@ import com.magus.cryptocompare.datasource.api.schemas.ResponseModel;
 import java.util.LinkedHashMap;
 
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -24,7 +23,7 @@ public interface CryptoCompareService {
 
     @GET("/data/all/coinlist")
     @OkHttpTimeouts(read = 20, write = 20)
-    Call<Response> getCryptoCoinList(@Query("summary") boolean summary, @Query("api_key") String apiKey);
+    Call<ResponseModel> getCryptoCoinList(@Query("summary") boolean summary, @Query("api_key") String apiKey);
 
     @GET("/data/price")
     Call<LinkedHashMap<String, String>> getCoinExchangeModel(@Query("api_key") String apiKey, @Query("fsym") String valueFrom, @Query("tsyms") String[] valueTo);

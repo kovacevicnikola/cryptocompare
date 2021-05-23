@@ -1,6 +1,7 @@
 package com.magus.cryptocompare.ui.details;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +20,10 @@ import org.jetbrains.annotations.NotNull;
 public class CryptoDetailFragment extends BaseCryptoDetailsFragment {
     FragmentCryptoDetailBinding binding;
 
-    public static CryptoDetailFragment newInstance(String symbol) {
+    public static CryptoDetailFragment newInstance(Parcelable coin) {
 
         Bundle args = new Bundle();
-        args.putString(ARG_SYMBOL, symbol);
+        args.putParcelable(ARG_COIN, coin);
         CryptoDetailFragment fragment = new CryptoDetailFragment();
         fragment.setArguments(args);
         return fragment;
@@ -49,8 +50,8 @@ public class CryptoDetailFragment extends BaseCryptoDetailsFragment {
             @NotNull
             @Override
             public Fragment createFragment(int position) {
-                if (position == 0) return CryptoDetailExchangeFragment.newInstance(symbol);
-                return CryptoDetailGraphFragment.newInstance(symbol);
+                if (position == 0) return CryptoDetailExchangeFragment.newInstance(coin);
+                return CryptoDetailGraphFragment.newInstance(coin);
             }
 
             @Override
@@ -64,7 +65,7 @@ public class CryptoDetailFragment extends BaseCryptoDetailsFragment {
     }
 
     private void setTextByPosition(TabLayout.Tab tab, int i) {
-        if (i == 0) tab.setText("Exchange");
+        if (i == 0) tab.setText(coin.getSymbol());
         else tab.setText("Graphs");
     }
 }

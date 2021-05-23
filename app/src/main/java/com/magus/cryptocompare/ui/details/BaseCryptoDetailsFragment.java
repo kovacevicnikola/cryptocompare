@@ -10,15 +10,16 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.magus.cryptocompare.datasource.MainViewModel;
+import com.magus.cryptocompare.datasource.database.CoinEntity;
 
 import org.jetbrains.annotations.NotNull;
 
 import io.reactivex.disposables.CompositeDisposable;
 
 public class BaseCryptoDetailsFragment extends Fragment {
-    protected static final String ARG_SYMBOL = "ARG_SYMBOL";
+    protected static final String ARG_COIN = "ARG_COIN";
     protected MainViewModel mViewModel;
-    String symbol;
+    CoinEntity coin;
     CompositeDisposable disposable = new CompositeDisposable();
 
     @Override
@@ -27,7 +28,7 @@ public class BaseCryptoDetailsFragment extends Fragment {
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         if (getArguments() != null) {
-            symbol = getArguments().getString(ARG_SYMBOL);
+            coin = getArguments().getParcelable(ARG_COIN);
         }
     }
 

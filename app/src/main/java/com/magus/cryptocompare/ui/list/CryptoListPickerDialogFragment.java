@@ -75,10 +75,11 @@ public class CryptoListPickerDialogFragment extends DialogFragment implements On
             }
         });
     }
+
     @Override
-    public void onCryptoPicked(String symbol) {
+    public void onCryptoPicked(CoinEntity coinEntity) {
         Bundle result = new Bundle();
-        result.putString(ARG_TO_SYMBOL, symbol);
+        result.putString(ARG_TO_SYMBOL, coinEntity.getSymbol());
         getParentFragmentManager().setFragmentResult(REQUEST_CODE_TSYM, result);
         dismiss();
     }

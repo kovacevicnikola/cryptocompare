@@ -152,7 +152,6 @@ public class MainViewModel extends AndroidViewModel {
                 for (PriceAndVolumeSchema priceAndVolumeSchema : priceAndVolumeList) {
                     float y = (priceAndVolumeSchema.getHigh().floatValue() - minHigh.floatValue()) / (maxHigh.floatValue() - minHigh.floatValue()) * chartHeightPx;
                     float x = (priceAndVolumeSchema.getTime().floatValue() - minTime) / (maxTime.floatValue() - minTime) * chartWidthPx;
-
                     if (initial) {
                         path.moveTo(0, chartHeightPx - y);
                         initial = false;

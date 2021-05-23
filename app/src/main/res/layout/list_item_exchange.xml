@@ -2,15 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
+    android:padding="8dp"
     >
 
     <TextView
-        android:id="@+id/tvCodeAndValue"
+        android:id="@+id/tvLabelAndValue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:padding="8dp"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:paddingBottom="16dp"
+        android:textSize="22sp" />
 </LinearLayout>

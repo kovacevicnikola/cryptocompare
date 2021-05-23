@@ -39,10 +39,9 @@ public class CryptoListFragment extends Fragment implements OnCryptoPickedListen
     }
 
     @Override
-    public void onCryptoPicked(String symbol) {
-        getParentFragmentManager().beginTransaction().replace(R.id.container, CryptoDetailFragment.newInstance(symbol))
+    public void onCryptoPicked(CoinEntity coin) {
+        getParentFragmentManager().beginTransaction().replace(R.id.container, CryptoDetailFragment.newInstance(coin))
                 .addToBackStack(null).commit();
-
     }
 
     @Nullable

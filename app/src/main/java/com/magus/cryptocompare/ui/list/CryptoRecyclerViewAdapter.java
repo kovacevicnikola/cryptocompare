@@ -42,7 +42,7 @@ public class CryptoRecyclerViewAdapter extends RecyclerView.Adapter<CryptoRecycl
                 .load(baseURL + currentCoin.getImageUrl()).override(120, 120)
                 .error(R.drawable.ic_no_image_available)
                 .into(holder.binding.ivCryptoIcon);
-        holder.binding.getRoot().setOnClickListener(v -> listener.onCryptoPicked(currentCoin.getSymbol()));
+        holder.binding.getRoot().setOnClickListener(v -> listener.onCryptoPicked(currentCoin));
     }
 
     @Override
