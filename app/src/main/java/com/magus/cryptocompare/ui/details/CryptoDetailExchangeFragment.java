@@ -63,6 +63,7 @@ public class CryptoDetailExchangeFragment extends BaseCryptoDetailsFragment {
                     @Override
                     public void onError(@NotNull Throwable e) {
                         handleError("Something went wrong, we can't get the exchange data for the selected coin!");
+                        binding.progressBar.setVisibility(View.GONE);
                         Timber.e(e);
                     }
                 });

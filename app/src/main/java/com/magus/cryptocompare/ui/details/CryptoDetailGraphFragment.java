@@ -120,6 +120,10 @@ public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
 
     private void refreshGraphs() {
         binding.tvFab.setText(toSymbol);
+        binding.graphHour.tvLabel.setText("Value by hour");
+        binding.graphDay.tvLabel.setText("Value by day");
+        binding.graphMinute.tvLabel.setText("Value by minute");
+
         initGraph(HOURLY);
         initGraph(DAILY);
         initGraph(BYMINUTE);
@@ -157,6 +161,7 @@ public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {
                             binding.graphDay.tvTimeLeft.setText(parseDate(minTime, type));
                         break;
                     case BYMINUTE:
+
                         binding.graphMinute.graphView.setVisibility(View.VISIBLE);
                         binding.graphMinute.tvError.setVisibility(View.GONE);
                         binding.graphMinute.graphView.drawGraph(path, mViewModel.getPaint(type));

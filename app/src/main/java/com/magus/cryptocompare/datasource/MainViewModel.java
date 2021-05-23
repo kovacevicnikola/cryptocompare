@@ -23,9 +23,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import io.reactivex.Single;
+import timber.log.Timber;
 
 public class MainViewModel extends AndroidViewModel {
-    private static float CHART_HEIGHT_DP = 300f;
+    private static float CHART_HEIGHT_DP = 340f;
     private Paint paintDaily;
     private Paint paintHourly;
     private Paint paintMinute;
@@ -47,8 +48,10 @@ public class MainViewModel extends AndroidViewModel {
                 TypedValue.COMPLEX_UNIT_DIP,
                 CHART_HEIGHT_DP,
                 r.getDisplayMetrics()
-        ) - 4;
-        chartWidthPx = r.getDisplayMetrics().widthPixels - 4;
+        );
+        chartWidthPx = r.getDisplayMetrics().widthPixels;
+
+
         generatePaint();
 
     }
@@ -67,7 +70,7 @@ public class MainViewModel extends AndroidViewModel {
         paintHourly = new Paint();
         paintHourly.setAntiAlias(true);
         paintHourly.setStrokeWidth(3);
-        paintHourly.setColor(Color.BLACK);
+        paintHourly.setColor(Color.CYAN);
         paintHourly.setStyle(Paint.Style.STROKE);
 
         paintMinute = new Paint();
@@ -152,6 +155,12 @@ public class MainViewModel extends AndroidViewModel {
                 for (PriceAndVolumeSchema priceAndVolumeSchema : priceAndVolumeList) {
                     float y = (priceAndVolumeSchema.getHigh().floatValue() - minHigh.floatValue()) / (maxHigh.floatValue() - minHigh.floatValue()) * chartHeightPx;
                     float x = (priceAndVolumeSchema.getTime().floatValue() - minTime) / (maxTime.floatValue() - minTime) * chartWidthPx;
+                    if (x >= chartWidthPx) Timber.e("X VALUE %s, WIDTH %s", x, chartWidthPx);
+                    if (y >= chartHeightPx) Timber.e("Y VALUE %s, HEIGHT %s", y, chartHeightPx);
+
+                    x = x * 0.95f; //padding
+                    y = y * 0.95f; //padding
+
                     if (initial) {
                         path.moveTo(0, chartHeightPx - y);
                         initial = false;
