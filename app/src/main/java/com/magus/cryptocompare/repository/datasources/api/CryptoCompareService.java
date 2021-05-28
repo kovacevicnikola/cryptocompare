@@ -1,6 +1,6 @@
-package com.magus.cryptocompare.datasource.api;
+package com.magus.cryptocompare.repository.datasources.api;
 
-import com.magus.cryptocompare.datasource.api.schemas.ResponseModel;
+import com.magus.cryptocompare.repository.datasources.api.schemas.ResponseModel;
 
 import java.util.LinkedHashMap;
 

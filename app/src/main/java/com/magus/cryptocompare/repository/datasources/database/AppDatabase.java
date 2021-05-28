@@ -1,4 +1,4 @@
-package com.magus.cryptocompare.datasource.database;
+package com.magus.cryptocompare.repository.datasources.database;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;

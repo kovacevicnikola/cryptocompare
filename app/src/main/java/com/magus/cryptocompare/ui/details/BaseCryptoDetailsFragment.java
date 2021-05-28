@@ -9,8 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.magus.cryptocompare.datasource.MainViewModel;
-import com.magus.cryptocompare.datasource.database.CoinEntity;
+import com.magus.cryptocompare.repository.MainViewModel;
+import com.magus.cryptocompare.repository.datasources.database.CoinEntity;
 
 import org.jetbrains.annotations.NotNull;
 

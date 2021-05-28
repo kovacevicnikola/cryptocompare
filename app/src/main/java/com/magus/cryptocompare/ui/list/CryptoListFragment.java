@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.magus.cryptocompare.R;
 import com.magus.cryptocompare.databinding.FragmentCryptoListBinding;
-import com.magus.cryptocompare.datasource.MainViewModel;
-import com.magus.cryptocompare.datasource.database.CoinEntity;
 import com.magus.cryptocompare.pojo.OnCryptoPickedListener;
+import com.magus.cryptocompare.repository.MainViewModel;
+import com.magus.cryptocompare.repository.datasources.database.CoinEntity;
 import com.magus.cryptocompare.ui.details.CryptoDetailFragment;
 
 import org.jetbrains.annotations.NotNull;

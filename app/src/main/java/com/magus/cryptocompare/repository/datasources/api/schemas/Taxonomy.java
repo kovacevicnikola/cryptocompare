@@ -1,5 +1,5 @@
 
-package com.magus.cryptocompare.datasource.api.schemas;
+package com.magus.cryptocompare.repository.datasources.api.schemas;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -10,8 +10,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import timber.log.Timber;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -45,9 +43,6 @@ public class Taxonomy {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    public Taxonomy(Object taxonomy) {
-        Timber.e(taxonomy.getClass().getCanonicalName());
-    }
 
     @JsonProperty("Access")
     public String getAccess() {

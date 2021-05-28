@@ -1,15 +1,12 @@
-package com.magus.cryptocompare.datasource;
+package com.magus.cryptocompare.repository.datasources.api;
 
 import android.app.Application;
 
-import androidx.room.Room;
-
 import com.magus.cryptocompare.R;
-import com.magus.cryptocompare.datasource.api.CryptoCompareService;
-import com.magus.cryptocompare.datasource.api.schemas.PriceAndVolumeSchema;
-import com.magus.cryptocompare.datasource.api.schemas.ResponseModel;
-import com.magus.cryptocompare.datasource.database.AppDatabase;
-import com.magus.cryptocompare.datasource.database.CoinEntity;
+import com.magus.cryptocompare.repository.datasources.BaseRemoteDataSource;
+import com.magus.cryptocompare.repository.datasources.api.schemas.PriceAndVolumeSchema;
+import com.magus.cryptocompare.repository.datasources.api.schemas.ResponseModel;
+import com.magus.cryptocompare.repository.datasources.database.CoinEntity;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,9 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Completable;
 import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -31,13 +26,11 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import timber.log.Timber;
 
-public class CryptoDataSource {
-    AppDatabase appDatabase;
-    String apiKey;
-    CryptoCompareService service;
+public class RemoteDataSource extends BaseRemoteDataSource {
+    private final String apiKey;
+    private final CryptoCompareService service;
 
-    public CryptoDataSource(Application application) {
-        appDatabase = Room.databaseBuilder(application, AppDatabase.class, "Crypto-db").build();
+    public RemoteDataSource(Application application) {
         apiKey = application.getString(R.string.crypto_compare_api_key);
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -56,32 +49,27 @@ public class CryptoDataSource {
                 .build().create(CryptoCompareService.class);
     }
 
-
-    public Single<List<CoinEntity>> getCryptoCoinList() {
-        return Single.create(emitter -> {
-            List<CoinEntity> coins;
-            Response<ResponseModel> response = service.getCryptoCoinList(false, apiKey).execute();
-            if (response.isSuccessful() && response.body() != null) {
-                coins = new ArrayList<>();
-                for (Map.Entry<String, Object> entry : response.body().getData().getAdditionalProperties().entrySet()) {
-                    try {
-                        coins.add(new CoinEntity((LinkedHashMap<String, Object>) entry.getValue()));
-                    } catch (Exception e) {
-                        Timber.e(e);
-                    }
+    @Override
+    public List<CoinEntity> getCoins() throws Exception {
+        List<CoinEntity> coins;
+        Response<ResponseModel> response = service.getCryptoCoinList(false, apiKey).execute();
+        if (response.isSuccessful() && response.body() != null) {
+            coins = new ArrayList<>();
+            for (Map.Entry<String, Object> entry : response.body().getData().getAdditionalProperties().entrySet()) {
+                try {
+                    coins.add(new CoinEntity((LinkedHashMap<String, Object>) entry.getValue()));
+                } catch (Exception e) {
+                    Timber.e(e);
                 }
-                insertOrUpdateCoins(coins);
-                emitter.onSuccess(coins);
-            } else {
-                emitter.onSuccess(appDatabase.getCoinsDao().getCoins());
             }
-        });
-    }
+            return coins;
+        } else {
+            if (response.errorBody() != null)
+                throw new Exception(response.errorBody().string());
+            else
+                throw new Exception("Something went wrong!");
 
-    private void insertOrUpdateCoins(List<CoinEntity> coins) {
-        Completable.create(emitter -> {
-            appDatabase.getCoinsDao().insert(coins);
-        }).subscribeOn(Schedulers.io()).subscribe();
+        }
     }
 
     public List<PriceAndVolumeSchema> getDataByDay(Integer limit, String valueFrom, String valueTo) throws IOException {
@@ -117,4 +105,5 @@ public class CryptoDataSource {
             }
         });
     }
+
 }

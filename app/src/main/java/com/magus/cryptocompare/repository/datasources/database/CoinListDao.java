@@ -1,4 +1,4 @@
-package com.magus.cryptocompare.datasource.database;
+package com.magus.cryptocompare.repository.datasources.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;

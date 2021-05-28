@@ -1,4 +1,4 @@
-package com.magus.cryptocompare.datasource;
+package com.magus.cryptocompare.repository;
 
 import android.app.Application;
 import android.content.res.Resources;
@@ -10,10 +10,10 @@ import android.util.TypedValue;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import com.magus.cryptocompare.datasource.api.schemas.PriceAndVolumeSchema;
-import com.magus.cryptocompare.datasource.database.CoinEntity;
-import com.magus.cryptocompare.pojo.Background;
-import com.magus.cryptocompare.pojo.PathDataModel;
+import com.magus.cryptocompare.repository.datasources.api.schemas.PriceAndVolumeSchema;
+import com.magus.cryptocompare.repository.datasources.database.CoinEntity;
+import com.magus.cryptocompare.ui.Background;
+import com.magus.cryptocompare.ui.PathDataModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import io.reactivex.Single;
-import timber.log.Timber;
 
 public class MainViewModel extends AndroidViewModel {
     private static float CHART_HEIGHT_DP = 340f;
@@ -32,13 +31,13 @@ public class MainViewModel extends AndroidViewModel {
     private Paint paintMinute;
     float chartHeightPx;
     HashMap<TimeIncrementType, Integer> limitHashMap = new HashMap<>();
-    private CryptoDataSource dataSource;
+    private final IMainRepository mainRepository;
     private Paint backgroundPaint;
     float chartWidthPx;
 
     public MainViewModel(@NonNull @NotNull Application application) {
         super(application);
-        dataSource = new CryptoDataSource(application);
+        mainRepository = new MainRepository(application);
         limitHashMap.put(TimeIncrementType.DAILY, 1);
         limitHashMap.put(TimeIncrementType.HOURLY, 24);
         limitHashMap.put(TimeIncrementType.BYMINUTE, 60);
@@ -100,7 +99,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public Single<List<CoinEntity>> getCoins() {
-        return dataSource.getCryptoCoinList();
+        return Single.fromCallable(mainRepository::getCryptoCoinList);
     }
 
     public Single<PathDataModel> getGraphPathAndData(TimeIncrementType type, String valueFrom, String valueTo) {
@@ -113,15 +112,15 @@ public class MainViewModel extends AndroidViewModel {
             try {
                 switch (type) {
                     case DAILY:
-                        priceAndVolumeList = dataSource.getDataByDay(limit, valueFrom, valueTo);
+                        priceAndVolumeList = mainRepository.getDataByDay(limit, valueFrom, valueTo);
 
                         break;
                     case HOURLY:
-                        priceAndVolumeList = dataSource.getDataByHour(limit, valueFrom, valueTo);
+                        priceAndVolumeList = mainRepository.getDataByHour(limit, valueFrom, valueTo);
                         break;
 
                     case BYMINUTE:
-                        priceAndVolumeList = dataSource.getDataByMinute(limit, valueFrom, valueTo);
+                        priceAndVolumeList = mainRepository.getDataByMinute(limit, valueFrom, valueTo);
 
                         break;
 
@@ -155,8 +154,6 @@ public class MainViewModel extends AndroidViewModel {
                 for (PriceAndVolumeSchema priceAndVolumeSchema : priceAndVolumeList) {
                     float y = (priceAndVolumeSchema.getHigh().floatValue() - minHigh.floatValue()) / (maxHigh.floatValue() - minHigh.floatValue()) * chartHeightPx;
                     float x = (priceAndVolumeSchema.getTime().floatValue() - minTime) / (maxTime.floatValue() - minTime) * chartWidthPx;
-                    if (x >= chartWidthPx) Timber.e("X VALUE %s, WIDTH %s", x, chartWidthPx);
-                    if (y >= chartHeightPx) Timber.e("Y VALUE %s, HEIGHT %s", y, chartHeightPx);
 
                     x = x * 0.95f; //padding
                     y = y * 0.95f; //padding
@@ -178,7 +175,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public Single<LinkedHashMap<String, String>> getCoinExchangeRate(String symbolFrom, String[] symbolsTo) {
-        return dataSource.getCoinExchangeModel(symbolFrom, symbolsTo);
+        return mainRepository.getCoinExchangeModel(symbolFrom, symbolsTo);
     }
 
     public enum TimeIncrementType {

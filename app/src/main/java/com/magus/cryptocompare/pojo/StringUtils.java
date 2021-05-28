@@ -10,21 +10,6 @@ public class StringUtils {
         return number != null ? String.valueOf(number) : "";
     }
 
-    public static String setCustomerCode(String customerCode, String customerBusinessUnitCode, String potentialCustomerCode) {
-
-        if (StringUtils.isNotBlank(customerBusinessUnitCode)) {
-
-            if (customerBusinessUnitCode.length() > 2) {
-                return customerCode + customerBusinessUnitCode.substring(customerBusinessUnitCode.length() - 2);
-            } else {
-                return customerCode;
-            }
-        } else if (StringUtils.isEmpty(customerCode)) {
-            return potentialCustomerCode;
-        }
-        return customerCode == null ? "" : customerCode;
-    }
-
     public static boolean isNotBlank(final CharSequence cs) {
         return cs != null && cs.length() > 0;
     }

@@ -11,8 +11,8 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.magus.cryptocompare.databinding.FragmentCryptoDetailGraphBinding;
-import com.magus.cryptocompare.datasource.MainViewModel;
-import com.magus.cryptocompare.pojo.PathDataModel;
+import com.magus.cryptocompare.repository.MainViewModel;
+import com.magus.cryptocompare.ui.PathDataModel;
 import com.magus.cryptocompare.ui.list.CryptoListPickerDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,9 +28,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.magus.cryptocompare.datasource.MainViewModel.TimeIncrementType.BYMINUTE;
-import static com.magus.cryptocompare.datasource.MainViewModel.TimeIncrementType.DAILY;
-import static com.magus.cryptocompare.datasource.MainViewModel.TimeIncrementType.HOURLY;
+import static com.magus.cryptocompare.repository.MainViewModel.TimeIncrementType.BYMINUTE;
+import static com.magus.cryptocompare.repository.MainViewModel.TimeIncrementType.DAILY;
+import static com.magus.cryptocompare.repository.MainViewModel.TimeIncrementType.HOURLY;
 import static com.magus.cryptocompare.ui.list.CryptoListPickerDialogFragment.ARG_TO_SYMBOL;
 
 public class CryptoDetailGraphFragment extends BaseCryptoDetailsFragment {

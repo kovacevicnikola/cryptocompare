@@ -1,4 +1,4 @@
-package com.magus.cryptocompare.pojo;
+package com.magus.cryptocompare.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;

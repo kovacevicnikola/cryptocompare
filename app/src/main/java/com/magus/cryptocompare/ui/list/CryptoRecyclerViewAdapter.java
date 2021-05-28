@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.magus.cryptocompare.R;
 import com.magus.cryptocompare.databinding.ListItemCryptoBinding;
-import com.magus.cryptocompare.datasource.database.CoinEntity;
 import com.magus.cryptocompare.pojo.OnCryptoPickedListener;
+import com.magus.cryptocompare.repository.datasources.database.CoinEntity;
 
 import org.jetbrains.annotations.NotNull;
 

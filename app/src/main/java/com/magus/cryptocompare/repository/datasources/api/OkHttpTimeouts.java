@@ -1,4 +1,4 @@
-package com.magus.cryptocompare.datasource.api;
+package com.magus.cryptocompare.repository.datasources.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
