@@ -71,7 +71,7 @@ public class RemoteDataSource extends BaseRemoteDataSource {
 
         }
     }
-
+    @Override
     public List<PriceAndVolumeSchema> getDataByDay(Integer limit, String valueFrom, String valueTo) throws IOException {
         return parseResponse(service.getDataByDay(apiKey, limit, valueFrom, valueTo).execute());
     }
@@ -82,13 +82,19 @@ public class RemoteDataSource extends BaseRemoteDataSource {
         else return new ArrayList<>();
     }
 
+    @Override
+
     public List<PriceAndVolumeSchema> getDataByHour(Integer limit, String valueFrom, String valueTo) throws IOException {
         return parseResponse(service.getDataByHour(apiKey, limit, valueFrom, valueTo).execute());
     }
 
+    @Override
+
     public List<PriceAndVolumeSchema> getDataByMinute(Integer limit, String valueFrom, String valueTo) throws IOException {
         return parseResponse(service.getDataByMinute(apiKey, limit, valueFrom, valueTo).execute());
     }
+
+    @Override
 
     public Single<LinkedHashMap<String, String>> getCoinExchangeModel(String symbolFrom, String[] symbolsTo) {
         return Single.create(emitter -> {
